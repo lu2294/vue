@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+</head>
+<body>
+<div id="app" class="container">
+    <h1>vue-resource</h1>
+    <a  class="btn btn-primary" href="javascript:;" v-on:click="get">Get请求</a>
+    <a class="btn btn-primary" href="javascript:;" v-on:click="post">Post请求</a>
+    <a class="btn btn-primary" href="javascript:;">Jsonp请求</a>
+    <div>{{msg}}</div>
+</div>
+<script>
+    new Vue({
+        el:"#app",
+    data:{
+         msg:'',
+    },
+        mounted:function(){
+            Vue.http.interceptors.push(function(request,next){
+                console.log('reauest init');
+                next(function(response){
+                    console.log('reponse init');
+                    return response;
+                })
+            });
+        },
+        methods:{
+            get: function(){
+                this.$http.get("package.json",{
+                    params:{
+                        userId:'1000',
+                    },
+                    headers:{
+                        token: 'abcd'
+                    }
+                }).then(res=>{
+                    this.msg = res.data;
+                },error=>{
+                    this.msg = error;
+                })
+            },
+            post: function(){
+                this.$http.post("package.json",{
+                    userId:'33333'
+                },{
+                    headers:{
+                        access_token:'abc'
+                    }
+                }).then(res=>{
+                    this.msg = res.data;
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>
